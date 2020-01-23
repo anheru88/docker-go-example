@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+  mysql:
+    build:
+      context: ./mysql
+    container_name: docker-go-mysql
+    environment:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - TZ=${WORKSPACE_TIMEZONE}
+    volumes:
+      - .data/mysql:/var/lib/mysql
+      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - docker_go_network
+
+  go:
+    build:
+      context: ./app
+      dockerfile: ../golang/Dockerfile 
+    container_name: docker-go
+    ports:
+      - "${GO_PORT}:8080"
+    networks:
+      - docker_go_network
+
+networks:
+  docker_go_network:
+    driver: ${NETWORKS_DRIVER}
