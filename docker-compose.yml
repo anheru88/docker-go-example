@@ -15,7 +15,6 @@ services:
     volumes:
       - .data/mysql:/var/lib/mysql
       - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
-      - /etc/localtime:/etc/localtime:ro
     ports:
       - "${MYSQL_PORT}:3306"
     networks:
